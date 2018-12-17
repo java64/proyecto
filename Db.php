@@ -14,7 +14,7 @@ class Db
             //Abrimos conexión a Mongo
             $conexion = new MongoDB\Client;
             //Seleccionamos base de datos Esto es develop
-            self::$conexion = $conexion->daw;
+            self::$conexion = $conexion->pruebas;
 
             return self::$conexion;
     }
