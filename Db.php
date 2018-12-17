@@ -12,7 +12,7 @@ class Db
     {
         //Abrimos conexión a Mongo
         $conexion = new MongoDB\Client;
-        //Seleccionamos base de datos
+        //Seleccionamos base de datos hola
         self::$conexion = $conexion->daw;
         return self::$conexion;
     }
