@@ -1,21 +1,23 @@
 <?php
-    require 'vendor/autoload.php';
 
-class Db
-{
-    private static $conexion=null;
-    private function __construct()
-    {
+require 'vendor/autoload.php';
+
+class Db {
+
+    private static $conexion = null;
+
+    private function __construct() {
+        
     }
- 
-    public static function conectar()
-    {
 
-            //Abrimos conexión a Mongo
-            $conexion = new MongoDB\Client;
-            //Seleccionamos base de datos Esto es develop
-            self::$conexion = $conexion->pruebas;
+    public static function conectar() {
 
-            return self::$conexion;
+        //Abrimos conexión a Mongo
+        $conexion = new MongoDB\Client;
+        //Seleccionamos base de datos Esto es develop
+        self::$conexion = $conexion->pruebas;
+
+        return self::$conexion;
     }
+
 }
