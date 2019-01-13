@@ -1,94 +1,138 @@
 <?php
-	spl_autoload_register( function( $NombreClase ) {
-	    include_once($NombreClase . '.php');
-	} );
 
-	class CrudReserva {
- 
-		// método para mostrar todas las reservas
-		public static function mostrar($unaFecha){
-			$bd=Db::conectar();
+spl_autoload_register(function( $NombreClase ) {
+    include_once($NombreClase . '.php');
+});
 
-			//Dentro de la base de datos seleccionamos una colección (tabla)
-			$coleccion = $bd->Reservas;
-			//Buscamos todas las reservas
-			$cursor = $coleccion->find(['Fecha' => $unaFecha]);
- 			$listaReservas=[];
+class CrudReserva {
 
-		    foreach ($cursor as $documento) {
-		    	$miReserva = new Reserva($documento["_id"],$documento["Apellidos"],$documento["Nombre"],$documento["Fecha"],$documento["Hora"],$documento["Comensales"]);
-				$listaReservas[]=$miReserva;
-		    }
+    // método para mostrar todas las reservas segun su fecha
+    public static function mostrar($unaFecha) {
+        $bd = Db::conectar();
 
-			$bd=null;
-			return $listaReservas;
-		}
+        //Dentro de la base de datos seleccionamos una colección (tabla)
+        $coleccion = $bd->Reservas;
+        //Buscamos todas las reservas
+        $cursor = $coleccion->find(['Fecha' => $unaFecha]);
+        $listaReservas = [];
+
+        foreach ($cursor as $documento) {
+            $miReserva = new Reserva($documento["_id"], $documento["Apellidos"], $documento["Nombre"], $documento["Fecha"], $documento["Hora"], $documento["Comensales"]);
+            $listaReservas[] = $miReserva;
+        }
+
+        $bd = null;
+        return $listaReservas;
+    }
+
+    // método para mostrar todas las reservas
+    public static function esPosible($unaReserva) {
+        $suma = 0;
+
+        $date = new DateTime($unaReserva->getFecha());
+        $fecha = $date->format('d/m/Y');
+
+        $reservas = CrudReserva::mostrar($fecha);
+        foreach ($reservas as $reserva) {
+            if ($unaReserva->getHora() == $reserva->getHora()) {
+                $suma += $reserva->getComensales();
+            }
+        }
+
+        if (($suma + $unaReserva->getComensales()) > Reserva::$maxcomensales)
+            return false;
+        else
+            return true;
+    }
+
+    //Eliminar una película
+    public static function eliminar($idReserva) {
+        $bd = Db::conectar();
+        //Dentro de la base de datos seleccionamos una colección (tabla)
+        $coleccion = $bd->Reservas;
+        //Buscamos todas las reservas
+        $coleccion->deleteOne(['_id' => new \MongoDB\BSON\ObjectId($idReserva)]);
 
 
-		// método para mostrar todas las reservas
-		public static function esPosible($unaReserva){
-			$suma=0;
+        $dbh = null;
+    }
 
-			$date = new DateTime($unaReserva->getFecha());
-			$fecha = $date->format('d/m/Y');
+    //Método para insertar una reserva que recibe un objeto Pelicula
+    public static function insertar($unaReserva) {
 
-			$reservas = CrudReserva::mostrar($fecha);
-			foreach ($reservas as $reserva) {
-				if ($unaReserva->getHora() == $reserva->getHora()) {
-					$suma+=$reserva->getComensales();
-				}
-			}
+        if (CrudReserva::esPosible($unaReserva)) {
 
-			if ( ($suma + $unaReserva->getComensales()) > Reserva::$maxcomensales)
-				return false;
-			else
-				return true;
-		}
+            $bd = Db::conectar();
+            //Dentro de la base de datos seleccionamos una colección (tabla)
+            $coleccion = $bd->Reservas;
 
+            $date = new DateTime($unaReserva->getFecha());
+            $fecha = $date->format('d/m/Y');
 
-		//Eliminar una película
-		public static function eliminar($idReserva) {
-			$bd=Db::conectar();
-			//Dentro de la base de datos seleccionamos una colección (tabla)
-			$coleccion = $bd->Reservas;
-			//Buscamos todas las reservas
-			$coleccion->deleteOne(['_id' => new \MongoDB\BSON\ObjectId($idReserva)]);
+            $documento = array(
+                "Nombre" => $unaReserva->getNombre(),
+                "Apellidos" => $unaReserva->getApellidos(),
+                "Email" => "yalohare@gmail.com",
+                "Tel" => 649589665,
+                "Fecha" => $fecha,
+                "Hora" => $unaReserva->getHora(),
+                "Comensales" => $unaReserva->getComensales()
+            );
 
+            $coleccion->insertOne($documento);
 
-			$dbh=null;
-		}
+            $dbh = null;
+            return true;
+        } else {
+            return false;
+        }
+    }
 
-		//Método para insertar una reserva que recibe un objeto Pelicula
-		public static function insertar($unaReserva) {
-			
-			if (CrudReserva::esPosible($unaReserva)) {
+    public static function mostrarPorId($unId) {
+        $bd = Db::conectar();
+        //Dentro de la base de datos seleccionamos una colección (tabla)
+        $coleccion = $bd->Reservas;
+        //Buscamos todas las reservas
+        $cursor = $coleccion->find(['_id' => new \MongoDB\BSON\ObjectId($unId)]);
+        $listaReservas = [];
 
-				$bd=Db::conectar();
-				//Dentro de la base de datos seleccionamos una colección (tabla)
-				$coleccion = $bd->Reservas;
+        foreach ($cursor as $documento) {
+            $miReserva = new Reserva($documento["_id"], $documento["Apellidos"], $documento["Nombre"], $documento["Fecha"], $documento["Hora"], $documento["Comensales"]);
+            $listaReservas[] = $miReserva;
+        }
 
-				$date = new DateTime($unaReserva->getFecha());
-				$fecha = $date->format('d/m/Y');
+        $bd = null;
+        return $listaReservas[0];
+    }
 
-				$documento = array( 
-				  "Nombre" => $unaReserva->getNombre(), 
-				  "Apellidos" => $unaReserva->getApellidos(), 
-				  "Email" => "yalohare@gmail.com",
-				  "Tel" => 649589665,
-				  "Fecha" => $fecha, 
-				  "Hora" => $unaReserva->getHora(), 
-				  "Comensales" => $unaReserva->getComensales() 
-				);
-	 
-	   			$coleccion->insertOne($documento);
+    public static function actualizar($unaReserva){
+        $fecha = new DateTime($unaReserva->getFecha());
+        $formateoFecha = $fecha->format("d/m/Y");
+        $bd = Db::conectar();
+        //Dentro de la base de datos seleccionamos una colección (tabla)
+        $coleccion = $bd->Reservas;
+        //Buscamos todas las reservas
+        $coleccion->updateOne(
+                ['_id' => new \MongoDB\BSON\ObjectId($unaReserva->getId())],
+                ['$set'=> ["Fecha" => $formateoFecha, "Hora" => $unaReserva->getHora(), "Comensales" => $unaReserva->getComensales()]]);
+    }
+        
+    // método para mostrar todas las reservas
+    public static function mostrarPorApellido($unApellido) {
+        $bd = Db::conectar();
 
-				$dbh=null;
-				return true;
+        //Dentro de la base de datos seleccionamos una colección (tabla)
+        $coleccion = $bd->Reservas;
+        //Buscamos todas las reservas
+        $cursor = $coleccion->find(['Apellidos' => $unApellido]);
+        $listaReservas = [];
 
-			} else {
-				return false;
-			}
+        foreach ($cursor as $documento) {
+            $miReserva = new Reserva($documento["_id"], $documento["Apellidos"], $documento["Nombre"], $documento["Fecha"], $documento["Hora"], $documento["Comensales"]);
+            $listaReservas[] = $miReserva;
+        }
 
-		}
-
+        $bd = null;
+        return $listaReservas;
+    }
 }

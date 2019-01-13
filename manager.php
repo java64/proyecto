@@ -30,12 +30,10 @@
 		
 		
 	} else if (isset($_POST['actualizar'])) {
-		/*
-		$unaPelicula = new Pelicula($_POST['id'],$_POST['titulo'],$_POST['genero'],$_POST['director'],$_POST['year'],$_POST['sinopsis'], subir());
-
-		BDPelicula::modificar($unaPelicula);
-		header("Location: index.php");
-		*/
+            $unaReserva = new Reserva($_POST['id'],$_POST['apellidos'],$_POST['nombre'],$_POST['fecha'],
+							$_POST['hora'],$_POST['comensales']);
+            CrudReserva::actualizar($unaReserva);
+		header("Location: reservas.php");
 	}
 
 
