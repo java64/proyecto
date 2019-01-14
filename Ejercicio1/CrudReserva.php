@@ -45,7 +45,7 @@ class CrudReserva {
             return true;
     }
 
-    //Eliminar una película
+    //Eliminar una reserva
     public static function eliminar($idReserva) {
         $bd = Db::conectar();
         //Dentro de la base de datos seleccionamos una colección (tabla)
