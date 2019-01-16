@@ -105,7 +105,7 @@ class CrudReserva {
         return $listaReservas[0];
     }
 
-    public static function actualizar($unaReserva){
+    public static function actualizar($unaReserva) {
         $fecha = new DateTime($unaReserva->getFecha());
         $formateoFecha = $fecha->format("d/m/Y");
         $bd = Db::conectar();
@@ -113,10 +113,9 @@ class CrudReserva {
         $coleccion = $bd->Reservas;
         //Buscamos todas las reservas
         $coleccion->updateOne(
-                ['_id' => new \MongoDB\BSON\ObjectId($unaReserva->getId())],
-                ['$set'=> ["Fecha" => $formateoFecha, "Hora" => $unaReserva->getHora(), "Comensales" => $unaReserva->getComensales()]]);
+                ['_id' => new \MongoDB\BSON\ObjectId($unaReserva->getId())], ['$set' => ["Fecha" => $formateoFecha, "Hora" => $unaReserva->getHora(), "Comensales" => $unaReserva->getComensales()]]);
     }
-        
+
     // método para mostrar todas las reservas
     public static function mostrarPorApellido($unApellido) {
         $bd = Db::conectar();
@@ -135,4 +134,5 @@ class CrudReserva {
         $bd = null;
         return $listaReservas;
     }
+
 }

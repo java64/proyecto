@@ -31,7 +31,6 @@ if (!isset($_POST['fecha'])) {
         <input type="submit" value="Buscar Apellido">
     </form>
 </section>
-
 <section>
     <table>
         <tr>
@@ -56,7 +55,7 @@ if (!isset($_POST['fecha'])) {
                     <td><a href="manager.php?id=<?php echo $reserva->getId() ?>&accion=a">Edit</a> </td>
                     <td><a href="manager.php?id=<?php echo $reserva->getId() ?>&accion=e">x</a>   </td>
                 </tr>
-            <?php
+                <?php
             }
         }
         ?>
@@ -82,7 +81,6 @@ if (!isset($_POST['fecha'])) {
 
 
 </section>
-
 <?php
 include "includes/pie.php";
 ?>
