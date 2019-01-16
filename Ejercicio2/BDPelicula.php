@@ -1,13 +1,14 @@
 <?php
-
-spl_autoload_register(function( $NombreClase ) {
+spl_autoload_register(function ($NombreClase) {
     include_once($NombreClase . '.php');
 });
 
-class BDPelicula {
+class BDPelicula
+{
 
     //metodos de base de datos
-    public static function mostrar() {
+    public static function mostrar()
+    {
         $bd = Db::conectar();
 
         //Dentro de la base de datos seleccionamos una colección (tabla)
@@ -25,7 +26,8 @@ class BDPelicula {
         return $listaPeliculas;
     }
 
-    public static function mostrarPorId($unId) {
+    public static function mostrarPorId($unId)
+    {
         $bd = Db::conectar();
         //Dentro de la base de datos seleccionamos una colección (tabla)
         $coleccion = $bd->pelicula;
@@ -43,7 +45,8 @@ class BDPelicula {
     }
 
     //Eliminar una pelicula
-    public static function eliminar($idPelicula) {
+    public static function eliminar($idPelicula)
+    {
         $bd = Db::conectar();
         //Dentro de la base de datos seleccionamos una colección (tabla)
         $coleccion = $bd->pelicula;
@@ -53,7 +56,8 @@ class BDPelicula {
     }
 
     //insertar una pelicula
-    public static function insertar($unaPelicula) {
+    public static function insertar($unaPelicula)
+    {
         $bd = Db::conectar();
         //Dentro de la base de datos seleccionamos una colección (tabla)
         $coleccion = $bd->pelicula;
@@ -72,23 +76,26 @@ class BDPelicula {
     }
 
     //Se modifica una pelicula pasandole un objeto pelicula con los valores a modificar
-    public static function modificar($unaPelicula) {
+    public static function modificar($unaPelicula)
+    {
         $bd = Db::conectar();
         //Dentro de la base de datos seleccionamos una colección (tabla)
         $coleccion = $bd->pelicula;
         //Buscamos todas las peliculas
         $coleccion->updateOne(
-        ['_id' => new \MongoDB\BSON\ObjectId($unaPelicula->getId())],
-        ['$set' => ["titulo" => $unaPelicula->getTitulo(),
-        "genero" => $unaPelicula->getGenero(),
-        "director" => $unaPelicula->getDirector(),
-        "year" => $unaPelicula->getYear(),
-        "sinopsis" => $unaPelicula->getSinopsis(),
-        "cartel" => $unaPelicula->getCartel()]]);
+            ['_id' => new \MongoDB\BSON\ObjectId($unaPelicula->getId())],
+            ['$set' => ["titulo" => $unaPelicula->getTitulo(),
+            "genero" => $unaPelicula->getGenero(),
+            "director" => $unaPelicula->getDirector(),
+            "year" => $unaPelicula->getYear(),
+            "sinopsis" => $unaPelicula->getSinopsis(),
+            "cartel" => $unaPelicula->getCartel()]]
+        );
     }
 
     //Muestra las criticas de una pelicula por el id_pelicula
-    public static function mostrarCriticas($unId) {
+    public static function mostrarCriticas($unId)
+    {
         $dbh = Db::conectar();
 
         try {
@@ -107,6 +114,4 @@ class BDPelicula {
         $dbh = null;
         return $misCriticas;
     }
-
 }
-?>

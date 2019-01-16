@@ -1,6 +1,7 @@
-<?php
+<?php session_start();
+ob_start();
 
-spl_autoload_register(function ( $NombreClase) {
+spl_autoload_register(function ($NombreClase) {
     include_once($NombreClase . '.php');
 });
 
@@ -22,6 +23,8 @@ if (isset($_POST['insertar'])) {
     $ruta = subir();
     $unaPelicula = new Pelicula(0, $_POST['titulo'], $_POST['genero'], $_POST['director'], $_POST['year'], $_POST['sinopsis'], $ruta);
     BDPelicula::insertar($unaPelicula);
+
+    //echo "<p>Aqui se sale</p>";
     header("Location: peliculas.php");
 } else if (isset($_POST['actualizar'])) {
     $ruta = subir();
@@ -30,7 +33,8 @@ if (isset($_POST['insertar'])) {
     header("Location: peliculas.php");
 }
 
-function subir() {
+function subir()
+{
 
     if (!isset($_FILES["cartel"])) {
         echo "No estoy recibiendo el archivo";
@@ -64,5 +68,3 @@ function subir() {
         }
     }
 }
-
-?>

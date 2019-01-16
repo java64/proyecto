@@ -1,6 +1,7 @@
 <?php
-
-spl_autoload_register(function( $NombreClase ) {
+session_start();
+ob_start();
+spl_autoload_register(function ($NombreClase) {
     include_once($NombreClase . '.php');
 });
 
@@ -19,7 +20,6 @@ if (isset($_GET['accion'])) {
 
 //Se comprueba que hemos recibido los datos del formulario de insertar película
 if (isset($_POST['insertar'])) {
-
     $unaReserva = new Reserva(0, $_POST['apellidos'], $_POST['nombre'], $_POST['fecha'], $_POST['hora'], $_POST['comensales']);
 
     if (CrudReserva::insertar($unaReserva)) {
@@ -34,7 +34,8 @@ if (isset($_POST['insertar'])) {
 }
 
 //Método para subir un fichero al servidor
-function subir() {
+function subir()
+{
 
     if (!isset($_FILES["cartel"])) {
         echo "No estoy recibiendo el archivo";
@@ -68,5 +69,3 @@ function subir() {
         }
     }
 }
-
-?>
